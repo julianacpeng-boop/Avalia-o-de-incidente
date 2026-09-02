@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget id="com.curiosidadesenclinica.chamadorapido" version="1.0.0"
+  xmlns="http://www.w3.org/ns/widgets"
+  xmlns:cdv="http://cordova.apache.org/ns/1.0"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <name>Chamado Rápido EC</name>
+  <description>Chamados rápidos por QR Code para a Engenharia Clínica</description>
+  <author email="julianacp.eng@gmail.com">Engenharia Clínica</author>
+  <content src="index.html" />
+
+  <access origin="*" />
+  <allow-intent href="http://*/*" />
+  <allow-intent href="https://*/*" />
+  <allow-intent href="whatsapp:*" />
+
+  <preference name="Orientation" value="portrait" />
+  <preference name="AndroidXEnabled" value="true" />
+  <preference name="android-targetSdkVersion" value="36" />
+  <preference name="android-compileSdkVersion" value="36" />
+  <preference name="AndroidWindowSplashScreenBackground" value="#06483D" />
+  <preference name="AndroidWindowSplashScreenAnimatedIcon" value="resources/icon.png" />
+  <preference name="AndroidWindowSplashScreenAnimationDuration" value="700" />
+
+  <icon src="resources/icon.png" />
+
+  <platform name="android">
+    <icon src="resources/icon.png" />
+    <config-file target="AndroidManifest.xml" parent="/*">
+      <uses-permission android:name="android.permission.CAMERA" />
+    </config-file>
+  </platform>
+</widget>

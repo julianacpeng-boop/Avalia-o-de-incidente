@@ -1,0 +1,7 @@
+No GitHub, envie o CONTEÚDO desta pasta para a raiz de um repositório novo.
+
+Não envie a pasta inteira dentro de outra pasta e não envie somente um arquivo ZIP.
+
+Depois, abra Actions > Gerar APK - Chamado Rápido EC > Run workflow.
+
+O APK será salvo em saida/Chamado_Rapido_EC.apk.

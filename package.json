@@ -1,0 +1,22 @@
+{
+  "name": "chamado-rapido-engenharia-clinica",
+  "displayName": "Chamado Rápido EC",
+  "version": "1.0.0",
+  "description": "Aplicativo de abertura de chamados por QR Code com triagem de segurança e envio pelo WhatsApp.",
+  "private": true,
+  "cordova": {
+    "platforms": [
+      "android"
+    ],
+    "plugins": {
+      "cordova-plugin-screen-orientation": {},
+      "cordova-plugin-inappbrowser": {}
+    }
+  },
+  "dependencies": {
+    "cordova-android": "15.1.0",
+    "cordova-plugin-inappbrowser": "^6.0.0",
+    "cordova-plugin-screen-orientation": "^3.0.4",
+    "html5-qrcode": "2.3.8"
+  }
+}
