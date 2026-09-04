@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Avaliação de Notificação - Engenharia Clínica</title>
+<style>
+  :root{
+    --blue:#0a66c2;
+    --blue2:#1f8cff;
+    --sky:#eaf5ff;
+    --sky2:#f6fbff;
+    --text:#16324b;
+    --muted:#6b8195;
+    --line:#d8e8f6;
+    --green:#1f9d66;
+    --green-bg:#e9f8f1;
+    --yellow:#a76800;
+    --yellow-bg:#fff6df;
+    --red:#cc3344;
+    --red-bg:#fff0f2;
+    --white:#ffffff;
+    --shadow:0 12px 35px rgba(30,104,160,.12);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(circle at 5% 0%, #d5edff 0, transparent 32%),
+      linear-gradient(180deg,#eff8ff 0%,#f8fbfd 100%);
+    min-height:100vh;
+  }
+
+  .app{
+    max-width:720px;
+    margin:0 auto;
+    min-height:100vh;
+    padding-bottom:110px;
+  }
+
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:10;
+    padding:18px 18px 16px;
+    background:rgba(246,251,255,.92);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border-bottom:1px solid rgba(216,232,246,.85);
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .logo{
+    width:46px;
+    height:46px;
+    border-radius:15px;
+    background:linear-gradient(135deg,var(--blue),var(--blue2));
+    color:white;
+    display:grid;
+    place-items:center;
+    font-weight:800;
+    font-size:20px;
+    box-shadow:0 8px 20px rgba(31,140,255,.25);
+  }
+
+  h1{
+    font-size:19px;
+    margin:0;
+    letter-spacing:-.3px;
+  }
+
+  .subtitle{
+    margin:3px 0 0;
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  .content{
+    padding:18px;
+  }
+
+  .step{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin:3px 0 12px;
+    font-size:13px;
+    color:var(--blue);
+    font-weight:750;
+  }
+
+  .step span{
+    width:24px;
+    height:24px;
+    border-radius:8px;
+    display:grid;
+    place-items:center;
+    background:#dcefff;
+  }
+
+  .card{
+    background:rgba(255,255,255,.96);
+    border:1px solid var(--line);
+    border-radius:24px;
+    box-shadow:var(--shadow);
+    padding:18px;
+    margin-bottom:16px;
+  }
+
+  .card-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:15px;
+  }
+
+  .card-title h2{
+    margin:0;
+    font-size:17px;
+    letter-spacing:-.2px;
+  }
+
+  .tag{
+    padding:7px 10px;
+    border-radius:999px;
+    background:#eef7ff;
+    color:var(--blue);
+    font-size:11px;
+    font-weight:800;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+
+  .full{grid-column:1/-1}
+
+  label{
+    font-size:12px;
+    font-weight:750;
+    color:#466075;
+    display:block;
+    margin:0 0 6px 2px;
+  }
+
+  input, textarea, select{
+    width:100%;
+    border:1px solid #cfe1f0;
+    background:#f9fcff;
+    border-radius:14px;
+    padding:13px 13px;
+    font-size:14px;
+    color:var(--text);
+    outline:none;
+    transition:.2s;
+  }
+
+  input:focus, textarea:focus, select:focus{
+    border-color:#63b1ff;
+    box-shadow:0 0 0 4px rgba(31,140,255,.10);
+    background:white;
+  }
+
+  textarea{min-height:92px;resize:vertical}
+
+  .question{
+    border:1px solid #deebf5;
+    border-radius:18px;
+    padding:14px;
+    margin-bottom:11px;
+    background:#fbfdff;
+  }
+
+  .q-title{
+    font-size:14px;
+    font-weight:780;
+    margin-bottom:4px;
+  }
+
+  .q-help{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.4;
+    margin-bottom:11px;
+  }
+
+  .segmented{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+
+  .segmented.three{
+    grid-template-columns:1fr 1fr 1fr;
+  }
+
+  .segmented.locked label:not(.active-na){
+    opacity:.45;
+    cursor:not-allowed;
+    background:#f2f5f7;
+    color:#93a2ad;
+    box-shadow:none;
+  }
+
+  @media(max-width:430px){
+    .segmented.three{
+      grid-template-columns:1fr 1fr 1fr;
+    }
+  }
+
+  .segmented input{display:none}
+
+  .segmented label{
+    margin:0;
+    text-align:center;
+    padding:11px 8px;
+    border-radius:12px;
+    border:1px solid #d6e5f1;
+    background:white;
+    color:#577086;
+    font-size:13px;
+    cursor:pointer;
+    transition:.2s;
+  }
+
+  .segmented input:checked + label{
+    color:white;
+    background:linear-gradient(135deg,var(--blue),var(--blue2));
+    border-color:transparent;
+    box-shadow:0 7px 16px rgba(31,140,255,.18);
+  }
+
+  .detail-wrap{
+    display:none;
+    margin-top:11px;
+    padding:12px;
+    border-radius:14px;
+    background:#f3f9ff;
+    border:1px solid #d8eaf8;
+  }
+
+  .detail-wrap.show{
+    display:block;
+    animation:detailIn .18s ease-out;
+  }
+
+  .detail-wrap label{
+    margin:0 0 7px 1px;
+    color:#355a75;
+    font-size:12px;
+    font-weight:800;
+  }
+
+  .detail-wrap textarea{
+    min-height:70px;
+    background:white;
+    margin:0;
+  }
+
+  @keyframes detailIn{
+    from{opacity:0;transform:translateY(-4px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+
+  .result{
+    display:none;
+    border-radius:22px;
+    padding:18px;
+    margin-top:14px;
+    border:1px solid transparent;
+  }
+
+  .result.show{display:block}
+  .result.red{background:var(--red-bg);border-color:#ffd4d9}
+  .result.yellow{background:var(--yellow-bg);border-color:#ffe6ad}
+  .result.green{background:var(--green-bg);border-color:#c9eddb}
+
+  .result-head{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+  }
+
+  .icon{
+    width:46px;
+    height:46px;
+    border-radius:15px;
+    display:grid;
+    place-items:center;
+    font-size:22px;
+    background:white;
+    flex:none;
+  }
+
+  .result h3{
+    margin:0 0 5px;
+    font-size:18px;
+  }
+
+  .result p{
+    margin:0;
+    font-size:13px;
+    line-height:1.5;
+  }
+
+  .reasons{
+    margin:13px 0 0;
+    padding-left:18px;
+    font-size:13px;
+    line-height:1.65;
+  }
+
+  .bottom{
+    position:fixed;
+    left:0;right:0;bottom:0;
+    z-index:15;
+    background:rgba(255,255,255,.94);
+    border-top:1px solid var(--line);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    padding:12px 18px calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .bottom-inner{
+    max-width:684px;
+    margin:0 auto;
+    display:block;
+  }
+
+  button{
+    border:0;
+    border-radius:16px;
+    padding:14px;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+  }
+
+  .ghost{
+    width:100%;
+    background:#edf5fb;
+    color:#48647b;
+  }
+
+  .primary{
+    color:white;
+    background:linear-gradient(135deg,var(--blue),var(--blue2));
+    box-shadow:0 8px 20px rgba(31,140,255,.25);
+  }
+
+
+  .actions-result{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:16px;
+  }
+
+  .copy-btn, .whatsapp-btn{
+    border-radius:14px;
+    padding:13px 12px;
+    font-size:13px;
+    font-weight:800;
+    cursor:pointer;
+    border:0;
+  }
+
+  .copy-btn{
+    background:#eef5fb;
+    color:#35566f;
+  }
+
+  .whatsapp-btn{
+    background:#25D366;
+    color:white;
+    box-shadow:0 7px 16px rgba(37,211,102,.20);
+  }
+
+  @media(max-width:430px){
+    .actions-result{grid-template-columns:1fr}
+  }
+
+  .small-note{
+    font-size:11px;
+    color:#7e91a2;
+    line-height:1.45;
+    margin-top:12px;
+  }
+
+  .demo-btn{
+    width:100%;
+    margin-top:4px;
+    background:#eef7ff;
+    color:var(--blue);
+    border:1px solid #d5eaff;
+  }
+
+  @media(max-width:560px){
+    .grid{grid-template-columns:1fr}
+    .full{grid-column:auto}
+    .card{border-radius:20px}
+    .content{padding:14px}
+    .topbar{padding:15px 14px}
+  }
+</style>
+</head>
+
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">EC</div>
+      <div>
+        <h1>Avaliação de Notificação</h1>
+        <div class="subtitle">Engenharia Clínica • Triagem de chamado</div>
+      </div>
+    </div>
+  </div>
+
+  <main class="content">
+    <div class="step"><span>1</span> Dados coletados no chamado</div>
+
+    <section class="card">
+      <div class="card-title">
+        <h2>Identificação</h2>
+        <div class="tag">Chamado técnico</div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label>Nº do chamado / OS</label>
+          <input id="chamado" placeholder="Ex.: 15482">
+        </div>
+        <div>
+          <label>Setor</label>
+          <input id="setor" placeholder="Ex.: UTI Adulto">
+        </div>
+        <div class="full">
+          <label>Equipamento</label>
+          <input id="equipamento" placeholder="Ex.: Ventilador pulmonar">
+        </div>
+        <div>
+          <label>Patrimônio</label>
+          <input id="patrimonio" placeholder="Ex.: 008528">
+        </div>
+        <div>
+          <label>Número de série</label>
+          <input id="serie" placeholder="Ex.: SN123456">
+        </div>
+        <div class="full">
+          <label>Falha relatada</label>
+          <textarea id="falha" placeholder="Descreva exatamente o que ocorreu..."></textarea>
+        </div>
+      </div>
+
+      <button class="demo-btn" onclick="preencherDemo()">Preencher exemplo automaticamente</button>
+    </section>
+
+    <div class="step"><span>2</span> Critérios para triagem</div>
+
+    <section class="card">
+      <div class="question">
+        <div class="q-title">A falha ocorreu durante o uso em um paciente?</div>
+        <div class="q-help">“Sim” significa que o equipamento estava sendo usado no paciente; não significa que houve dano.</div>
+        <div class="segmented">
+          <input type="radio" name="usoPaciente" id="usoPacienteNao" value="nao">
+          <label for="usoPacienteNao">Não</label>
+          <input type="radio" name="usoPaciente" id="usoPacienteSim" value="sim">
+          <label for="usoPacienteSim">Sim</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="q-title">Se não estava em uso, seria utilizado imediatamente em um atendimento?</div>
+        <div class="q-help">Exemplo: equipamento preparado para uma emergência ou procedimento naquele momento.</div>
+        <div class="segmented three" id="usoImediatoGrupo">
+          <input type="radio" name="usoImediato" id="usoImediatoSim" value="sim">
+          <label for="usoImediatoSim">Sim</label>
+          <input type="radio" name="usoImediato" id="usoImediatoNao" value="nao">
+          <label for="usoImediatoNao">Não</label>
+          <input type="radio" name="usoImediato" id="usoImediatoNA" value="na">
+          <label for="usoImediatoNA" id="usoImediatoNALabel">Não se aplica</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="q-title">A falha causou algum dano ao paciente?</div>
+        <div class="q-help">Exemplo: lesão, queimadura, queda, dessaturação ou piora clínica.</div>
+        <div class="segmented three">
+          <input type="radio" name="dano" id="danoSim" value="sim">
+          <label for="danoSim">Sim</label>
+          <input type="radio" name="dano" id="danoNao" value="nao">
+          <label for="danoNao">Não</label>
+          <input type="radio" name="dano" id="danoNaoSei" value="nao_sei">
+          <label for="danoNaoSei">Não sei</label>
+        </div>
+
+        <div class="detail-wrap" id="danoDetalheWrap">
+          <label for="danoDetalhe">Descreva resumidamente o dano observado</label>
+          <textarea id="danoDetalhe" placeholder="Ex.: paciente apresentou dessaturação e necessitou de intervenção..."></textarea>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="q-title">Foi necessária alguma ação imediata para evitar dano?</div>
+        <div class="q-help">Exemplo: ventilação manual, troca urgente do equipamento, transferência ou outra conduta assistencial.</div>
+        <div class="segmented three">
+          <input type="radio" name="acao" id="acaoSim" value="sim">
+          <label for="acaoSim">Sim</label>
+          <input type="radio" name="acao" id="acaoNao" value="nao">
+          <label for="acaoNao">Não</label>
+          <input type="radio" name="acao" id="acaoNA" value="na">
+          <label for="acaoNA">Não se aplica</label>
+        </div>
+
+        <div class="detail-wrap" id="acaoDetalheWrap">
+          <label for="acaoDetalhe">Descreva qual ação imediata foi realizada</label>
+          <textarea id="acaoDetalhe" placeholder="Ex.: equipamento substituído imediatamente e paciente mantido em ventilação manual..."></textarea>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="q-title">A falha poderia causar dano, resultado incorreto ou atraso crítico?</div>
+        <div class="q-help">Considere o risco potencial mesmo quando nenhum dano chegou a ocorrer.</div>
+        <div class="segmented three">
+          <input type="radio" name="risco" id="riscoSim" value="sim">
+          <label for="riscoSim">Sim</label>
+          <input type="radio" name="risco" id="riscoNao" value="nao">
+          <label for="riscoNao">Não</label>
+          <input type="radio" name="risco" id="riscoNaoSei" value="nao_sei">
+          <label for="riscoNaoSei">Não sei</label>
+        </div>
+
+        <div class="detail-wrap" id="riscoDetalheWrap">
+          <label for="riscoDetalhe">Descreva resumidamente qual era o risco potencial</label>
+          <textarea id="riscoDetalhe" placeholder="Ex.: poderia causar atraso crítico na terapia ou resultado incorreto..."></textarea>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="q-title">Essa falha já aconteceu antes?</div>
+        <div class="q-help">Considere ocorrência igual ou semelhante no mesmo equipamento ou modelo.</div>
+        <div class="segmented three">
+          <input type="radio" name="recorrente" id="recSim" value="sim">
+          <label for="recSim">Sim</label>
+          <input type="radio" name="recorrente" id="recNao" value="nao">
+          <label for="recNao">Não</label>
+          <input type="radio" name="recorrente" id="recNaoSei" value="nao_sei">
+          <label for="recNaoSei">Não sei</label>
+        </div>
+      </div>
+    </section>
+
+    <div class="step"><span>3</span> Resultado da triagem</div>
+
+    <section class="card">
+      <div id="result" class="result">
+        <div class="result-head">
+          <div class="icon" id="resultIcon">!</div>
+          <div>
+            <h3 id="resultTitle"></h3>
+            <p id="resultText"></p>
+          </div>
+        </div>
+        <ul class="reasons" id="reasons"></ul>
+
+        <div class="actions-result">
+          <button class="copy-btn" onclick="copiarResumo()">📋 Copiar dados</button>
+          <button class="whatsapp-btn" onclick="enviarWhatsApp()">💬 Enviar no WhatsApp</button>
+        </div>
+      </div>
+
+      <div class="small-note">
+        Esta tela funciona como triagem interna. O resultado pode ser ajustado às regras e ao fluxo oficial do hospital para abertura de notificação no SIGQuali.
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="bottom">
+  <div class="bottom-inner">
+    <button class="ghost" onclick="limpar()">Limpar</button>
+  </div>
+</div>
+
+<script>
+function val(name){
+  const el = document.querySelector('input[name="'+name+'"]:checked');
+  return el ? el.value : '';
+}
+
+function textoResposta(nome){
+  const v = val(nome);
+  if(v === 'sim') return 'Sim';
+  if(v === 'nao') return 'Não';
+  if(v === 'na') return 'Não se aplica';
+  if(v === 'nao_sei') return 'Não sei';
+  return 'Não respondido';
+}
+
+function aplicarRegraUso(){
+  const uso = val('usoPaciente');
+  const grupo = document.getElementById('usoImediatoGrupo');
+  const sim = document.getElementById('usoImediatoSim');
+  const nao = document.getElementById('usoImediatoNao');
+  const na = document.getElementById('usoImediatoNA');
+  const naLabel = document.getElementById('usoImediatoNALabel');
+
+  if(uso === 'sim'){
+    na.checked = true;
+    sim.disabled = true;
+    nao.disabled = true;
+    na.disabled = false;
+    grupo.classList.add('locked');
+    naLabel.classList.add('active-na');
+  } else {
+    sim.disabled = false;
+    nao.disabled = false;
+    na.disabled = false;
+    grupo.classList.remove('locked');
+    naLabel.classList.remove('active-na');
+
+    // Se "Não se aplica" veio automaticamente da resposta anterior,
+    // limpa para o usuário responder quando mudar a primeira para "Não".
+    if(uso === 'nao' && na.checked){
+      na.checked = false;
+    }
+  }
+}
+
+function todasRespondidas(){
+  const obrigatorias = ['usoPaciente','usoImediato','dano','acao','risco','recorrente'];
+  return obrigatorias.every(nome => !!val(nome));
+}
+
+function controlarDetalhe(nome, wrapId, campoId){
+  const wrap = document.getElementById(wrapId);
+  const campo = document.getElementById(campoId);
+  const abrir = val(nome) === 'sim';
+
+  wrap.classList.toggle('show', abrir);
+
+  if(!abrir){
+    campo.value = '';
+  }
+}
+
+function atualizarDetalhes(){
+  controlarDetalhe('dano', 'danoDetalheWrap', 'danoDetalhe');
+  controlarDetalhe('acao', 'acaoDetalheWrap', 'acaoDetalhe');
+  controlarDetalhe('risco', 'riscoDetalheWrap', 'riscoDetalhe');
+}
+
+function avaliar(){
+  aplicarRegraUso();
+  atualizarDetalhes();
+
+  const result = document.getElementById('result');
+  const title = document.getElementById('resultTitle');
+  const text = document.getElementById('resultText');
+  const icon = document.getElementById('resultIcon');
+  const reasons = document.getElementById('reasons');
+
+  result.className = 'result';
+  reasons.innerHTML = '';
+
+  if(!todasRespondidas()){
+    return;
+  }
+
+  const usoPaciente = val('usoPaciente') === 'sim';
+  const usoImediato = val('usoImediato') === 'sim';
+  const dano = val('dano') === 'sim';
+  const acao = val('acao') === 'sim';
+  const risco = val('risco') === 'sim';
+  const recorrente = val('recorrente') === 'sim';
+
+  result.className = 'result show';
+
+  let motivos = [];
+
+  if(usoPaciente) motivos.push('A falha ocorreu durante o uso em um paciente.');
+  if(usoImediato) motivos.push('O equipamento seria utilizado imediatamente em um atendimento.');
+  if(dano) motivos.push('Foi informado dano ao paciente.');
+  if(acao) motivos.push('Foi necessária ação imediata para evitar dano.');
+  if(risco) motivos.push('Foi identificado potencial de dano, resultado incorreto ou atraso crítico.');
+  if(recorrente) motivos.push('A falha foi informada como recorrente.');
+
+  if(dano || acao || risco){
+    result.classList.add('red');
+    icon.textContent = '⚠️';
+    title.textContent = 'NOTIFICAR NO SIGQUALI';
+    text.textContent = 'O chamado apresenta critério de dano, intervenção ou risco potencial e deve seguir para avaliação/notificação institucional.';
+  }
+  else if(usoPaciente || usoImediato || recorrente){
+    result.classList.add('yellow');
+    icon.textContent = '🔎';
+    title.textContent = 'AVALIAR ANTES DE ENCERRAR';
+    text.textContent = 'Não foi informado dano ou risco potencial, porém há condição de uso assistencial ou recorrência que recomenda revisão pela Engenharia Clínica.';
+  }
+  else{
+    result.classList.add('green');
+    icon.textContent = '✓';
+    title.textContent = 'SEM CRITÉRIO DE NOTIFICAÇÃO';
+    text.textContent = 'Pelos dados informados, o caso pode permanecer registrado como atendimento técnico, sem indicação automática de notificação.';
+  }
+
+  if(motivos.length === 0){
+    motivos.push('Nenhum critério de dano, intervenção, risco, uso assistencial imediato ou recorrência foi marcado.');
+  }
+
+  motivos.forEach(m=>{
+    const li = document.createElement('li');
+    li.textContent = m;
+    reasons.appendChild(li);
+  });
+}
+
+function montarResumo(){
+  const chamado = document.getElementById('chamado').value || 'Não informado';
+  const setor = document.getElementById('setor').value || 'Não informado';
+  const equipamento = document.getElementById('equipamento').value || 'Não informado';
+  const patrimonio = document.getElementById('patrimonio').value || 'Não informado';
+  const serie = document.getElementById('serie').value || 'Não informado';
+  const falha = document.getElementById('falha').value || 'Não informada';
+  const danoDetalhe = document.getElementById('danoDetalhe').value.trim();
+  const acaoDetalhe = document.getElementById('acaoDetalhe').value.trim();
+  const riscoDetalhe = document.getElementById('riscoDetalhe').value.trim();
+  const resultado = document.getElementById('resultTitle').textContent || 'Ainda não analisado';
+
+  const detalhes = [
+    val('dano') === 'sim' ? `• Dano observado: ${danoDetalhe || 'Não descrito'}` : '',
+    val('acao') === 'sim' ? `• Ação imediata realizada: ${acaoDetalhe || 'Não descrita'}` : '',
+    val('risco') === 'sim' ? `• Risco potencial: ${riscoDetalhe || 'Não descrito'}` : ''
+  ].filter(Boolean).join('\n');
+
+  return `*AVALIAÇÃO DE NOTIFICAÇÃO - ENGENHARIA CLÍNICA*
+
+*Chamado/OS:* ${chamado}
+*Setor:* ${setor}
+*Equipamento:* ${equipamento}
+*Patrimônio:* ${patrimonio}
+*Nº de série:* ${serie}
+
+*Falha relatada:*
+${falha}
+
+*Critérios avaliados:*
+• Falha ocorreu durante o uso em paciente: ${textoResposta('usoPaciente')}
+• Se não estava em uso, seria utilizado imediatamente: ${textoResposta('usoImediato')}
+• A falha causou dano ao paciente: ${textoResposta('dano')}
+• Foi necessária ação imediata para evitar dano: ${textoResposta('acao')}
+• Poderia causar dano, resultado incorreto ou atraso crítico: ${textoResposta('risco')}
+• A falha já aconteceu antes: ${textoResposta('recorrente')}
+
+${detalhes ? `*Descrições complementares:*\n${detalhes}\n\n` : ''}*Resultado da triagem:*
+${resultado}`;
+}
+
+async function copiarResumo(){
+  const texto = montarResumo();
+  try{
+    await navigator.clipboard.writeText(texto);
+    alert('Dados copiados para a área de transferência.');
+  }catch(e){
+    const area = document.createElement('textarea');
+    area.value = texto;
+    document.body.appendChild(area);
+    area.select();
+    document.execCommand('copy');
+    document.body.removeChild(area);
+    alert('Dados copiados para a área de transferência.');
+  }
+}
+
+function enviarWhatsApp(){
+  const texto = montarResumo();
+  const numero = '5584994472995';
+  const url = `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
+  window.open(url, '_blank');
+}
+
+function preencherDemo(){
+  document.getElementById('chamado').value = 'CH-2026-01582';
+  document.getElementById('setor').value = 'UTI Adulto';
+  document.getElementById('equipamento').value = 'Ventilador pulmonar';
+  document.getElementById('patrimonio').value = '012345';
+  document.getElementById('serie').value = 'SN-VP-2026-88';
+  document.getElementById('falha').value = 'Ventilador desligou durante o uso e foi substituído imediatamente por outro equipamento.';
+
+  document.getElementById('usoPacienteSim').checked = true;
+  aplicarRegraUso();
+  document.getElementById('danoNao').checked = true;
+  document.getElementById('acaoSim').checked = true;
+  document.getElementById('riscoSim').checked = true;
+  document.getElementById('recNao').checked = true;
+  atualizarDetalhes();
+  document.getElementById('acaoDetalhe').value = 'Ventilação manual iniciada e equipamento substituído imediatamente.';
+  document.getElementById('riscoDetalhe').value = 'Risco de interrupção da ventilação e dessaturação do paciente.';
+  avaliar();
+}
+
+function limpar(){
+  document.querySelectorAll('input[type="text"], textarea').forEach(el=>el.value='');
+  document.querySelectorAll('input[type="radio"]').forEach(el=>{
+    el.checked = false;
+    el.disabled = false;
+  });
+
+  ['danoDetalheWrap','acaoDetalheWrap','riscoDetalheWrap'].forEach(id=>{
+    document.getElementById(id).classList.remove('show');
+  });
+
+  const grupo = document.getElementById('usoImediatoGrupo');
+  grupo.classList.remove('locked');
+  document.getElementById('usoImediatoNALabel').classList.remove('active-na');
+
+  const result = document.getElementById('result');
+  result.className = 'result';
+  document.getElementById('reasons').innerHTML='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.querySelectorAll('input[type="radio"]').forEach(el=>{
+  el.addEventListener('change', avaliar);
+});
+</script>
+</body>
+</html>
